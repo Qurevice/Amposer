@@ -6,340 +6,126 @@
 <title>Amposer Overdrive</title>
 <style>
   * { box-sizing: border-box; }
-
   body {
-    margin: 0;
-    min-height: 100vh;
-    background:
-      radial-gradient(circle at 50% 0%, #232323 0%, #0a0a0a 70%),
-      #080808;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 30px 20px;
-    font-family: 'Segoe UI', Arial, sans-serif;
-    color: #eee;
-    user-select: none;
+    margin: 0; min-height: 100vh;
+    background: radial-gradient(circle at 50% 0%, #232323 0%, #0a0a0a 70%), #080808;
+    display: flex; align-items: center; justify-content: center;
+    padding: 30px 20px; font-family: 'Segoe UI', Arial, sans-serif;
+    color: #eee; user-select: none;
   }
 
-  /* ============ ПАНЕЛЬ ВЫБОРА ВХОДА (отдельное окно) ============ */
+  /* ===== ПАНЕЛЬ ВХОДА ===== */
   .input-panel {
-    position: fixed;
-    top: 18px;
-    left: 18px;
-    width: 250px;
+    position: fixed; top: 18px; left: 18px; width: 250px;
     background: linear-gradient(180deg, #1c1c1c, #101010);
-    border: 2px solid #c9a227;
-    border-radius: 10px;
-    padding: 14px;
+    border: 2px solid #c9a227; border-radius: 10px; padding: 14px;
     box-shadow: 0 10px 40px rgba(0,0,0,.85), inset 0 0 20px rgba(0,0,0,.6);
     z-index: 100;
   }
-  .ip-title {
-    font-size: 11px;
-    letter-spacing: 2px;
-    color: #c9a227;
-    font-weight: 700;
-    margin-bottom: 10px;
-    text-align: center;
-  }
+  .ip-title { font-size: 11px; letter-spacing: 2px; color: #c9a227; font-weight: 700; margin-bottom: 10px; text-align: center; }
   .input-panel select {
-    width: 100%;
-    padding: 8px 6px;
-    background: #0b0b0b;
-    color: #e8dcc0;
-    border: 1px solid #3a3a3a;
-    border-radius: 5px;
-    font-size: 12px;
-    outline: none;
-    cursor: pointer;
+    width: 100%; padding: 8px 6px; background: #0b0b0b; color: #e8dcc0;
+    border: 1px solid #3a3a3a; border-radius: 5px; font-size: 12px; outline: none; cursor: pointer;
   }
   .input-panel select:focus { border-color: #c9a227; }
-
-  .ip-row {
-    display: flex;
-    gap: 8px;
-    margin-top: 10px;
-  }
+  .ip-row { display: flex; gap: 8px; margin-top: 10px; }
   .ip-row button {
-    flex: 1;
-    padding: 9px 6px;
-    border-radius: 5px;
-    border: 1px solid #3a3a3a;
-    background: linear-gradient(180deg, #2a2a2a, #171717);
-    color: #ddd;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    cursor: pointer;
-    transition: .15s;
+    flex: 1; padding: 9px 6px; border-radius: 5px; border: 1px solid #3a3a3a;
+    background: linear-gradient(180deg, #2a2a2a, #171717); color: #ddd;
+    font-size: 11px; font-weight: 700; letter-spacing: 1px; cursor: pointer; transition: .15s;
   }
   .ip-row button:hover { background: linear-gradient(180deg, #383838, #202020); }
   .ip-row button#refreshBtn { flex: 0 0 42px; font-size: 15px; }
+  .ip-row button.power { background: linear-gradient(180deg, #3a1010, #200808); border-color: #6b1a1a; color: #ff8a8a; }
+  .ip-row button.power.on { background: linear-gradient(180deg, #0f3a15, #08200a); border-color: #1f7a2c; color: #7dff9a; box-shadow: 0 0 14px rgba(60,255,110,.35); }
+  .ip-status { margin-top: 12px; display: flex; align-items: center; gap: 8px; font-size: 11px; letter-spacing: 1px; color: #888; }
+  .led { width: 10px; height: 10px; border-radius: 50%; background: #400; box-shadow: inset 0 0 3px #000; transition: .2s; }
+  .led.on { background: #39ff6a; box-shadow: 0 0 10px #39ff6a, inset 0 0 3px #fff; }
 
-  .ip-row button.power {
-    background: linear-gradient(180deg, #3a1010, #200808);
-    border-color: #6b1a1a;
-    color: #ff8a8a;
+  /* ===== ПАНЕЛЬ ЗАПИСИ ===== */
+  .rec-panel {
+    position: fixed; top: 18px; right: 18px; width: 250px;
+    background: linear-gradient(180deg, #1c1c1c, #101010);
+    border: 2px solid #6b1a1a; border-radius: 10px; padding: 12px;
+    box-shadow: 0 10px 40px rgba(0,0,0,.85), inset 0 0 20px rgba(0,0,0,.6);
+    z-index: 100; font-size: 11px;
   }
-  .ip-row button.power.on {
-    background: linear-gradient(180deg, #0f3a15, #08200a);
-    border-color: #1f7a2c;
-    color: #7dff9a;
-    box-shadow: 0 0 14px rgba(60,255,110,.35);
+  .rec-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .rec-btn {
+    width: 24px; height: 24px; border-radius: 50%; border: 2px solid #6b1a1a;
+    background: radial-gradient(circle at 35% 30%, #ff5a5a, #a80f0f 70%, #5a0000);
+    cursor: pointer; padding: 0; flex-shrink: 0;
+    box-shadow: 0 0 8px rgba(255,60,60,.5), inset 0 1px 2px rgba(255,255,255,.4); transition: .2s;
   }
+  .rec-btn:hover { box-shadow: 0 0 14px rgba(255,60,60,.9); }
+  .rec-btn:disabled { opacity: .4; cursor: not-allowed; }
+  .rec-btn.recording { animation: recPulse 1s infinite; background: radial-gradient(circle at 35% 30%, #ff8080, #ff1a1a 70%, #8a0000); }
+  @keyframes recPulse { 0%,100% { box-shadow: 0 0 8px rgba(255,60,60,.6); } 50% { box-shadow: 0 0 22px rgba(255,60,60,1), 0 0 34px rgba(255,60,60,.6); } }
+  .folder-btn {
+    width: 24px; height: 24px; border-radius: 50%; border: 1px solid #3a3a3a;
+    background: linear-gradient(180deg, #2a2a2a, #171717); color: #c9a227;
+    cursor: pointer; font-size: 15px; font-weight: 700; padding: 0; line-height: 1; flex-shrink: 0;
+  }
+  .folder-btn:hover { background: linear-gradient(180deg, #383838, #202020); color: #ffd74a; }
+  .folder-btn:disabled { opacity: .4; cursor: not-allowed; }
+  .rec-folder { flex: 1; font-size: 9px; color: #888; letter-spacing: .5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: right; }
+  .rec-body { display: none; }
+  .rec-body.active { display: block; }
+  .rec-timer { font-family: 'Courier New', monospace; font-size: 18px; font-weight: 700; color: #ff5a5a; text-align: center; letter-spacing: 2px; margin: 2px 0 6px; }
+  .rec-wave { width: 100%; height: 60px; display: block; background: #050505; border: 1px solid #000; border-radius: 4px; }
+  .rec-status { font-size: 9px; color: #888; text-align: center; margin-top: 6px; min-height: 12px; }
 
-  .ip-status {
-    margin-top: 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 11px;
-    letter-spacing: 1px;
-    color: #888;
-  }
-  .led {
-    width: 10px; height: 10px;
-    border-radius: 50%;
-    background: #400;
-    box-shadow: inset 0 0 3px #000;
-    transition: .2s;
-  }
-  .led.on {
-    background: #39ff6a;
-    box-shadow: 0 0 10px #39ff6a, inset 0 0 3px #fff;
-  }
-
-  /* ============ КОМБИК ============ */
+  /* ===== КОМБИК ===== */
   .amp {
-    width: 780px;
-    max-width: 100%;
-    background:
-      repeating-linear-gradient(45deg, rgba(255,255,255,.025) 0 1px, transparent 1px 4px),
-      linear-gradient(180deg, #1c1c1c, #070707);
-    border: 4px solid #b8962a;
-    border-radius: 12px;
-    padding: 12px;
-    box-shadow:
-      0 30px 70px rgba(0,0,0,.9),
-      inset 0 0 60px rgba(0,0,0,.9),
-      0 0 0 1px #000;
+    width: 780px; max-width: 100%;
+    background: repeating-linear-gradient(45deg, rgba(255,255,255,.025) 0 1px, transparent 1px 4px), linear-gradient(180deg, #1c1c1c, #070707);
+    border: 4px solid #b8962a; border-radius: 12px; padding: 12px;
+    box-shadow: 0 30px 70px rgba(0,0,0,.9), inset 0 0 60px rgba(0,0,0,.9), 0 0 0 1px #000;
   }
-
-  /* Золотая панель управления */
   .amp-panel {
     background: linear-gradient(180deg, #ece0c0 0%, #ddcda2 45%, #c3b183 100%);
-    border-radius: 6px;
-    border: 1px solid #8a7a4a;
-    padding: 14px 18px 16px;
+    border-radius: 6px; border: 1px solid #8a7a4a; padding: 14px 18px 16px;
     box-shadow: inset 0 2px 4px rgba(255,255,255,.6), inset 0 -3px 8px rgba(0,0,0,.25);
     color: #1a1a1a;
   }
-
-  .panel-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
-    padding-bottom: 8px;
-    border-bottom: 2px solid rgba(0,0,0,.25);
-  }
-  .brand {
-    font-family: 'Brush Script MT', 'Segoe Script', cursive;
-    font-size: 30px;
-    color: #111;
-    line-height: 1;
-    letter-spacing: 1px;
-    text-shadow: 0 1px 0 rgba(255,255,255,.6);
-  }
-  .brand small {
-    font-family: 'Segoe UI', Arial, sans-serif;
-    font-size: 9px;
-    letter-spacing: 4px;
-    font-weight: 700;
-    color: #5a4d2a;
-    display: block;
-    margin-top: -2px;
-  }
-  .model {
-    font-size: 10px;
-    letter-spacing: 3px;
-    font-weight: 700;
-    color: #5a4d2a;
-  }
-
-  .panel-body {
-    display: flex;
-    gap: 14px;
-    align-items: stretch;
-    flex-wrap: wrap;
-  }
-
-  .module {
-    background: linear-gradient(180deg, #141414, #050505);
-    border-radius: 6px;
-    padding: 10px 12px 12px;
-    border: 1px solid #000;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 3px 8px rgba(0,0,0,.4);
-    min-width: 190px;
-  }
-  .module-title {
-    font-size: 9px;
-    letter-spacing: 2.5px;
-    color: #c9a227;
-    font-weight: 700;
-    margin-bottom: 9px;
-    text-align: center;
-  }
-  .btn-row {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  .btn-row button {
-    padding: 8px 11px;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    border-radius: 4px;
-    border: 1px solid #333;
-    background: linear-gradient(180deg, #262626, #131313);
-    color: #8a8a8a;
-    cursor: pointer;
-    transition: .15s;
-    box-shadow: 0 2px 0 #000;
-  }
+  .panel-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid rgba(0,0,0,.25); }
+  .brand { font-family: 'Brush Script MT', cursive; font-size: 30px; color: #111; line-height: 1; text-shadow: 0 1px 0 rgba(255,255,255,.6); }
+  .brand small { font-family: 'Segoe UI', sans-serif; font-size: 9px; letter-spacing: 4px; font-weight: 700; color: #5a4d2a; display: block; margin-top: -2px; }
+  .model { font-size: 10px; letter-spacing: 3px; font-weight: 700; color: #5a4d2a; }
+  .panel-body { display: flex; gap: 14px; align-items: stretch; flex-wrap: wrap; }
+  .module { background: linear-gradient(180deg, #141414, #050505); border-radius: 6px; padding: 10px 12px 12px; border: 1px solid #000; min-width: 190px; }
+  .module-title { font-size: 9px; letter-spacing: 2.5px; color: #c9a227; font-weight: 700; margin-bottom: 9px; text-align: center; }
+  .btn-row { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+  .btn-row button { padding: 8px 11px; font-size: 10px; font-weight: 700; letter-spacing: 1px; border-radius: 4px; border: 1px solid #333; background: linear-gradient(180deg, #262626, #131313); color: #8a8a8a; cursor: pointer; transition: .15s; box-shadow: 0 2px 0 #000; }
   .btn-row button:hover { color: #ccc; background: linear-gradient(180deg, #333, #1a1a1a); }
-  .btn-row button.active {
-    background: linear-gradient(180deg, #e8c84a, #b8962a);
-    color: #1a1400;
-    border-color: #7a6418;
-    box-shadow: 0 0 12px rgba(230,190,60,.6), 0 2px 0 #6b5714;
-  }
-
-  /* Крутилки */
-  .knob-zone {
-    background: linear-gradient(180deg, #141414, #050505);
-    border-radius: 6px;
-    padding: 12px 14px 10px;
-    border: 1px solid #000;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 3px 8px rgba(0,0,0,.4);
-    display: flex;
-    gap: 14px;
-    align-items: flex-start;
-    flex: 1;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
+  .btn-row button.active { background: linear-gradient(180deg, #e8c84a, #b8962a); color: #1a1400; border-color: #7a6418; box-shadow: 0 0 12px rgba(230,190,60,.6); }
+  .knob-zone { background: linear-gradient(180deg, #141414, #050505); border-radius: 6px; padding: 12px 14px 10px; border: 1px solid #000; flex: 1; display: flex; gap: 14px; align-items: flex-start; justify-content: center; flex-wrap: wrap; }
   .knob-group { display: flex; gap: 14px; }
-  .knob-divider {
-    width: 1px;
-    align-self: stretch;
-    background: linear-gradient(180deg, transparent, #444, transparent);
-    margin: 4px 2px;
-  }
-
-  .knob {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 7px;
-    cursor: ns-resize;
-    touch-action: none;
-  }
-  .knob-dial {
-    width: 54px; height: 54px;
-    border-radius: 50%;
-    position: relative;
-    background:
-      radial-gradient(circle at 34% 28%, #6a6a6a 0%, #2a2a2a 42%, #0a0a0a 100%);
-    border: 2px solid #000;
-    box-shadow:
-      0 4px 8px rgba(0,0,0,.75),
-      inset 0 2px 3px rgba(255,255,255,.22),
-      inset 0 -3px 6px rgba(0,0,0,.8);
-    transition: box-shadow .15s;
-  }
-  .knob:hover .knob-dial { box-shadow: 0 4px 12px rgba(0,0,0,.85), 0 0 12px rgba(200,160,40,.35), inset 0 2px 3px rgba(255,255,255,.25), inset 0 -3px 6px rgba(0,0,0,.8); }
-  .knob.active .knob-dial { box-shadow: 0 0 18px rgba(230,190,60,.7), inset 0 2px 3px rgba(255,255,255,.3), inset 0 -3px 6px rgba(0,0,0,.8); }
-
-  .knob-pointer {
-    position: absolute;
-    inset: 0;
-    transform-origin: 50% 50%;
-    transform: rotate(-135deg);
-    pointer-events: none;
-  }
-  .knob-pointer::before {
-    content: '';
-    position: absolute;
-    left: 50%;
-    top: 5px;
-    width: 3px;
-    height: 17px;
-    margin-left: -1.5px;
-    background: linear-gradient(180deg, #fff, #b8b8b8);
-    border-radius: 2px;
-    box-shadow: 0 0 5px rgba(255,255,255,.7);
-  }
-  .knob-name {
-    font-size: 9px;
-    letter-spacing: 1.5px;
-    font-weight: 700;
-    color: #c9a227;
-  }
-
-  /* ============ РЕШЁТКА ============ */
-  .amp-grille {
-    margin-top: 12px;
-    height: 200px;
-    border-radius: 6px;
-    border: 1px solid #000;
-    background:
-      repeating-linear-gradient(0deg, #1c1712 0 2px, #0d0a08 2px 4px),
-      repeating-linear-gradient(90deg, rgba(255,255,255,.035) 0 2px, transparent 2px 4px),
-      #100d0b;
-    box-shadow: inset 0 0 50px rgba(0,0,0,.95);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-  }
-  .logo-plate {
-    background: linear-gradient(180deg, #f0e6c8, #cdbb8c);
-    border: 2px solid #8a7a4a;
-    border-radius: 4px;
-    padding: 8px 30px;
-    font-family: 'Brush Script MT', 'Segoe Script', cursive;
-    font-size: 34px;
-    color: #111;
-    box-shadow: 0 4px 14px rgba(0,0,0,.85), inset 0 1px 0 rgba(255,255,255,.9);
-    text-shadow: 0 1px 0 rgba(255,255,255,.5);
-  }
-
-  .hint {
-    text-align: center;
-    font-size: 10px;
-    color: #6a6a6a;
-    letter-spacing: 1px;
-    margin-top: 10px;
-  }
+  .knob-divider { width: 1px; align-self: stretch; background: linear-gradient(180deg, transparent, #444, transparent); margin: 4px 2px; }
+  .knob { display: flex; flex-direction: column; align-items: center; gap: 7px; cursor: ns-resize; touch-action: none; }
+  .knob-dial { width: 54px; height: 54px; border-radius: 50%; position: relative; background: radial-gradient(circle at 34% 28%, #6a6a6a 0%, #2a2a2a 42%, #0a0a0a 100%); border: 2px solid #000; box-shadow: 0 4px 8px rgba(0,0,0,.75), inset 0 2px 3px rgba(255,255,255,.22); }
+  .knob-pointer { position: absolute; inset: 0; transform-origin: 50% 50%; transform: rotate(-135deg); pointer-events: none; }
+  .knob-pointer::before { content: ''; position: absolute; left: 50%; top: 5px; width: 3px; height: 17px; margin-left: -1.5px; background: linear-gradient(180deg, #fff, #b8b8b8); border-radius: 2px; }
+  .knob-name { font-size: 9px; letter-spacing: 1.5px; font-weight: 700; color: #c9a227; }
+  .amp-grille { margin-top: 12px; height: 200px; border-radius: 6px; border: 1px solid #000; background: repeating-linear-gradient(0deg, #1c1712 0 2px, #0d0a08 2px 4px), repeating-linear-gradient(90deg, rgba(255,255,255,.035) 0 2px, transparent 2px 4px), #100d0b; display: flex; align-items: center; justify-content: center; }
+  .logo-plate { background: linear-gradient(180deg, #f0e6c8, #cdbb8c); border: 2px solid #8a7a4a; border-radius: 4px; padding: 8px 30px; font-family: 'Brush Script MT', cursive; font-size: 34px; color: #111; }
+  .hint { text-align: center; font-size: 10px; color: #6a6a6a; margin-top: 10px; }
 
   @media (max-width: 860px) {
-    .input-panel { position: static; width: 100%; max-width: 780px; margin-bottom: 16px; }
-    body { flex-direction: column; }
+    body { flex-direction: column; padding-top: 120px; }
+    .input-panel { position: relative; top: 0; left: 0; width: 100%; max-width: 780px; margin-bottom: 16px; }
+    .rec-panel { position: relative; top: 0; right: 0; width: 100%; max-width: 780px; margin-bottom: 16px; order: -1; }
   }
 </style>
 </head>
 <body>
 
-<!-- ===== ОТДЕЛЬНОЕ ОКНО: ВЫБОР ВХОДА ===== -->
+<!-- ПАНЕЛЬ ВХОДА -->
 <div class="input-panel">
   <div class="ip-title">INPUT SOURCE / АУДИОВХОД</div>
   <select id="deviceSelect"></select>
   <div class="ip-row">
-    <button id="refreshBtn" title="Обновить список устройств">⟳</button>
+    <button id="refreshBtn" title="Обновить список">⟳</button>
     <button id="powerBtn" class="power">POWER ON</button>
   </div>
   <div class="ip-status">
@@ -348,17 +134,28 @@
   </div>
 </div>
 
-<!-- ===== КОМБИК ===== -->
+<!-- ПАНЕЛЬ ЗАПИСИ -->
+<div class="rec-panel">
+  <div class="rec-header">
+    <button class="rec-btn" id="recBtn" title="Запись"></button>
+    <button class="folder-btn" id="folderBtn" title="Выбрать папку">+</button>
+    <span class="rec-folder" id="recFolder">папка не выбрана</span>
+  </div>
+  <div class="rec-body" id="recBody">
+    <div class="rec-timer" id="recTimer">00:00</div>
+    <canvas class="rec-wave" id="recWave" width="440" height="120"></canvas>
+  </div>
+  <div class="rec-status" id="recStatus"></div>
+</div>
+
+<!-- КОМБИК -->
 <div class="amp">
   <div class="amp-panel">
     <div class="panel-top">
       <div class="brand">Amposer<small>STYLE OVERDRIVE</small></div>
       <div class="model">JCM-900 · SIM</div>
     </div>
-
     <div class="panel-body">
-
-      <!-- Окно 1: перегруз -->
       <div class="module">
         <div class="module-title">OVERDRIVE</div>
         <div class="btn-row" id="modeRow">
@@ -367,8 +164,6 @@
           <button data-mode="lead">LEAD</button>
         </div>
       </div>
-
-      <!-- Окно 2: кабинет -->
       <div class="module">
         <div class="module-title">CABINET SIM</div>
         <div class="btn-row" id="cabRow">
@@ -378,44 +173,22 @@
           <button data-cab="4x12" class="active">4×12</button>
         </div>
       </div>
-
-      <!-- Крутилки -->
       <div class="knob-zone">
         <div class="knob-group">
-          <div class="knob" data-param="gain">
-            <div class="knob-dial"><div class="knob-pointer"></div></div>
-            <div class="knob-name">GAIN</div>
-          </div>
-          <div class="knob" data-param="volume">
-            <div class="knob-dial"><div class="knob-pointer"></div></div>
-            <div class="knob-name">VOLUME</div>
-          </div>
+          <div class="knob" data-param="gain"><div class="knob-dial"><div class="knob-pointer"></div></div><div class="knob-name">GAIN</div></div>
+          <div class="knob" data-param="volume"><div class="knob-dial"><div class="knob-pointer"></div></div><div class="knob-name">VOLUME</div></div>
         </div>
         <div class="knob-divider"></div>
         <div class="knob-group">
-          <div class="knob" data-param="low">
-            <div class="knob-dial"><div class="knob-pointer"></div></div>
-            <div class="knob-name">LOW</div>
-          </div>
-          <div class="knob" data-param="mid">
-            <div class="knob-dial"><div class="knob-pointer"></div></div>
-            <div class="knob-name">MID</div>
-          </div>
-          <div class="knob" data-param="high">
-            <div class="knob-dial"><div class="knob-pointer"></div></div>
-            <div class="knob-name">HIGH</div>
-          </div>
+          <div class="knob" data-param="low"><div class="knob-dial"><div class="knob-pointer"></div></div><div class="knob-name">LOW</div></div>
+          <div class="knob" data-param="mid"><div class="knob-dial"><div class="knob-pointer"></div></div><div class="knob-name">MID</div></div>
+          <div class="knob" data-param="high"><div class="knob-dial"><div class="knob-pointer"></div></div><div class="knob-name">HIGH</div></div>
         </div>
       </div>
-
     </div>
   </div>
-
-  <div class="amp-grille">
-    <div class="logo-plate">Amposer</div>
-  </div>
-
-  <div class="hint">Крутилки: тяни вверх/вниз мышью · Shift — точная настройка · двойной клик — сброс</div>
+  <div class="amp-grille"><div class="logo-plate">Amposer</div></div>
+  <div class="hint">Крутилки: тяни вверх/вниз · Shift — точно · двойной клик — сброс<br>Запись: нажми ● — файл WAV сохранится в выбранную папку</div>
 </div>
 
 <script>
@@ -440,12 +213,11 @@ const statusText   = document.getElementById('statusText');
 const ipTitle      = document.querySelector('.ip-title');
 
 /* =====================================================
-   УТИЛИТЫ
+   УТИЛИТЫ И ГЕНЕРАЦИЯ ЗВУКА
    ===================================================== */
 function makeCurve(mode) {
-  const n = 4096;
-  const curve = new Float32Array(n);
-  const k    = mode === 'clean' ? 1.2 : mode === 'crunch' ? 4.5 : 11;
+  const n = 4096; const curve = new Float32Array(n);
+  const k = mode === 'clean' ? 1.2 : mode === 'crunch' ? 4.5 : 11;
   const asym = mode === 'lead' ? 0.30 : mode === 'crunch' ? 0.15 : 0.05;
   const norm = Math.tanh(k);
   for (let i = 0; i < n; i++) {
@@ -468,65 +240,36 @@ const CAB_PRESETS = {
    ===================================================== */
 function buildChain() {
   const ctx = audioCtx;
-
   chain.inputGain = ctx.createGain();
-  chain.shaper    = ctx.createWaveShaper();
-  chain.shaper.oversample = '4x';
+  chain.shaper    = ctx.createWaveShaper(); chain.shaper.oversample = '4x';
   chain.postGain  = ctx.createGain();
-
   chain.low  = ctx.createBiquadFilter();
   chain.mid  = ctx.createBiquadFilter();
   chain.high = ctx.createBiquadFilter();
-
   chain.cabHP   = ctx.createBiquadFilter();
   chain.cabLP1  = ctx.createBiquadFilter();
   chain.cabLP2  = ctx.createBiquadFilter();
   chain.cabPeak = ctx.createBiquadFilter();
   chain.cabDip  = ctx.createBiquadFilter();
-
   chain.volume  = ctx.createGain();
-
   chain.limiter = ctx.createDynamicsCompressor();
-  chain.limiter.threshold.value = -3;
-  chain.limiter.knee.value      = 0;
-  chain.limiter.ratio.value     = 20;
-  chain.limiter.attack.value    = 0.003;
-  chain.limiter.release.value   = 0.1;
+  chain.limiter.threshold.value = -3; chain.limiter.knee.value = 0;
+  chain.limiter.ratio.value = 20; chain.limiter.attack.value = 0.003; chain.limiter.release.value = 0.1;
 
-  /* -------- ГЛАВНОЕ ИСПРАВЛЕНИЕ: ПРИНУДИТЕЛЬНОЕ СТЕРЕО --------
-     Узел с channelCount=2 и channelCountMode='explicit' при
-     channelInterpretation='speakers' гарантированно апмикширует
-     моно-сигнал в оба канала (L + R). */
   chain.stereoOut = ctx.createGain();
-  chain.stereoOut.channelCount = 2;
-  chain.stereoOut.channelCountMode = 'explicit';
-  chain.stereoOut.channelInterpretation = 'speakers';
+  chain.stereoOut.channelCount = 2; chain.stereoOut.channelCountMode = 'explicit'; chain.stereoOut.channelInterpretation = 'speakers';
 
-  // типы фильтров
-  chain.low.type  = 'lowshelf';
-  chain.low.frequency.value = 120;
-
-  chain.mid.type  = 'peaking';
-  chain.mid.frequency.value = 750;
-  chain.mid.Q.value = 0.8;
-
-  chain.high.type = 'highshelf';
-  chain.high.frequency.value = 3200;
-
-  chain.cabHP.type   = 'highpass';
-  chain.cabHP.Q.value = 0.7;
-  chain.cabLP1.type  = 'lowpass';
-  chain.cabLP1.Q.value = 0.6;
-  chain.cabLP2.type  = 'lowpass';
-  chain.cabLP2.Q.value = 0.6;
-  chain.cabPeak.type = 'peaking';
-  chain.cabPeak.Q.value = 1.1;
-  chain.cabDip.type  = 'peaking';
-  chain.cabDip.Q.value = 0.9;
+  chain.low.type = 'lowshelf'; chain.low.frequency.value = 120;
+  chain.mid.type = 'peaking'; chain.mid.frequency.value = 750; chain.mid.Q.value = 0.8;
+  chain.high.type = 'highshelf'; chain.high.frequency.value = 3200;
+  chain.cabHP.type = 'highpass'; chain.cabHP.Q.value = 0.7;
+  chain.cabLP1.type = 'lowpass'; chain.cabLP1.Q.value = 0.6;
+  chain.cabLP2.type = 'lowpass'; chain.cabLP2.Q.value = 0.6;
+  chain.cabPeak.type = 'peaking'; chain.cabPeak.Q.value = 1.1;
+  chain.cabDip.type = 'peaking'; chain.cabDip.Q.value = 0.9;
 
   chain.shaper.curve = makeCurve(currentMode);
 
-  // соединения
   chain.inputGain.connect(chain.shaper);
   chain.shaper.connect(chain.postGain);
   chain.postGain.connect(chain.low);
@@ -539,38 +282,28 @@ function buildChain() {
   chain.cabPeak.connect(chain.cabDip);
   chain.cabDip.connect(chain.volume);
   chain.volume.connect(chain.limiter);
-  chain.limiter.connect(chain.stereoOut);   // вместо destination
-  chain.stereoOut.connect(ctx.destination); // stereoOut -> L + R
+  chain.limiter.connect(chain.stereoOut);
+  chain.stereoOut.connect(ctx.destination);
 
   applyParams();
   applyCab();
 }
 
-/* =====================================================
-   ПРИМЕНЕНИЕ ПАРАМЕТРОВ
-   ===================================================== */
 function applyParams() {
   if (!audioCtx || !chain.inputGain) return;
-  const t = audioCtx.currentTime;
-  const S = 0.02;
-
+  const t = audioCtx.currentTime; const S = 0.02;
   const pre = 0.4 + Math.pow(params.gain, 1.6) * 14;
   chain.inputGain.gain.setTargetAtTime(pre, t, S);
   chain.postGain.gain.setTargetAtTime(Math.pow(pre, -0.4) * 1.45, t, S);
-
   chain.low.gain.setTargetAtTime((params.low  - 0.5) * 30, t, S);
   chain.mid.gain.setTargetAtTime((params.mid  - 0.5) * 30, t, S);
   chain.high.gain.setTargetAtTime((params.high - 0.5) * 30, t, S);
-
   chain.volume.gain.setTargetAtTime(Math.pow(params.volume, 1.8) * 2.0, t, S);
 }
 
 function applyCab() {
   if (!audioCtx || !chain.cabHP) return;
-  const p = CAB_PRESETS[currentCab];
-  const t = audioCtx.currentTime;
-  const S = 0.02;
-
+  const p = CAB_PRESETS[currentCab]; const t = audioCtx.currentTime; const S = 0.02;
   chain.cabHP.frequency.setTargetAtTime(p.hp, t, S);
   chain.cabLP1.frequency.setTargetAtTime(p.lp1, t, S);
   chain.cabLP2.frequency.setTargetAtTime(p.lp2, t, S);
@@ -580,28 +313,17 @@ function applyCab() {
   chain.cabDip.gain.setTargetAtTime(p.dip, t, S);
 }
 
-function applyMode() {
-  if (!audioCtx || !chain.shaper) return;
-  chain.shaper.curve = makeCurve(currentMode);
-}
+function applyMode() { if (audioCtx && chain.shaper) chain.shaper.curve = makeCurve(currentMode); }
 
 /* =====================================================
    ВКЛЮЧЕНИЕ / ВЫКЛЮЧЕНИЕ
    ===================================================== */
 async function startAudio() {
   const deviceId = deviceSelect.value;
-
-  const audioConstraints = {
-    echoCancellation: false,
-    noiseSuppression: false,
-    autoGainControl: false
-  };
+  const audioConstraints = { echoCancellation: false, noiseSuppression: false, autoGainControl: false };
   if (deviceId) audioConstraints.deviceId = { exact: deviceId };
 
-  stream = await navigator.mediaDevices.getUserMedia({
-    audio: audioConstraints,
-    video: false
-  });
+  stream = await navigator.mediaDevices.getUserMedia({ audio: audioConstraints, video: false });
 
   if (!audioCtx) {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -613,66 +335,47 @@ async function startAudio() {
   srcNode.connect(chain.inputGain);
 
   isOn = true;
-  powerBtn.textContent = 'POWER OFF';
-  powerBtn.classList.add('on');
+  powerBtn.textContent = 'POWER OFF'; powerBtn.classList.add('on');
   ledEl.classList.add('on');
-  statusText.textContent = 'ВКЛЮЧЁН · ИДЁТ СИГНАЛ';
-  statusText.style.color = '#7dff9a';
-
+  statusText.textContent = 'ВКЛЮЧЁН · ИДЁТ СИГНАЛ'; statusText.style.color = '#7dff9a';
   await refreshDevices();
 }
 
 async function stopAudio() {
+  if (isRecording) await stopRecording();
   if (srcNode) { try { srcNode.disconnect(); } catch (e) {} srcNode = null; }
   if (stream)  { stream.getTracks().forEach(tr => tr.stop()); stream = null; }
   if (audioCtx && audioCtx.state === 'running') { try { await audioCtx.suspend(); } catch (e) {} }
 
   isOn = false;
-  powerBtn.textContent = 'POWER ON';
-  powerBtn.classList.remove('on');
+  powerBtn.textContent = 'POWER ON'; powerBtn.classList.remove('on');
   ledEl.classList.remove('on');
-  statusText.textContent = 'ВЫКЛЮЧЕН';
-  statusText.style.color = '#888';
+  statusText.textContent = 'ВЫКЛЮЧЕН'; statusText.style.color = '#888';
 }
 
 async function swapDevice() {
   if (!isOn) return;
   if (stream) { stream.getTracks().forEach(tr => tr.stop()); stream = null; }
   if (srcNode) { try { srcNode.disconnect(); } catch (e) {} srcNode = null; }
-
   try {
     const deviceId = deviceSelect.value;
-    const audioConstraints = {
-      echoCancellation: false,
-      noiseSuppression: false,
-      autoGainControl: false
-    };
+    const audioConstraints = { echoCancellation: false, noiseSuppression: false, autoGainControl: false };
     if (deviceId) audioConstraints.deviceId = { exact: deviceId };
-
-    stream = await navigator.mediaDevices.getUserMedia({
-      audio: audioConstraints,
-      video: false
-    });
+    stream = await navigator.mediaDevices.getUserMedia({ audio: audioConstraints, video: false });
     srcNode = audioCtx.createMediaStreamSource(stream);
     srcNode.connect(chain.inputGain);
-    statusText.textContent = 'ВКЛЮЧЁН · ИДЁТ СИГНАЛ';
-    statusText.style.color = '#7dff9a';
+    statusText.textContent = 'ВКЛЮЧЁН · ИДЁТ СИГНАЛ'; statusText.style.color = '#7dff9a';
   } catch (err) {
-    console.error(err);
-    statusText.textContent = 'ОШИБКА УСТРОЙСТВА';
-    statusText.style.color = '#ff7b7b';
+    statusText.textContent = 'ОШИБКА УСТРОЙСТВА'; statusText.style.color = '#ff7b7b';
   }
 }
 
-/* =====================================================
-   СПИСОК УСТРОЙСТВ + АВТОСКРЫТИЕ ПРИ 1 УСТРОЙСТВЕ
-   ===================================================== */
 function updateDeviceUI(count) {
-  const show = count > 1;
-  ipTitle.style.display      = show ? '' : 'none';
+  const show = count >= 1; // Исправлено: показываем даже если 1 устройство
+  ipTitle.style.display = show ? '' : 'none';
   deviceSelect.style.display = show ? '' : 'none';
-  refreshBtn.style.display   = show ? '' : 'none';
-  powerBtn.style.flex        = show ? '' : '1';
+  refreshBtn.style.display = show ? '' : 'none';
+  powerBtn.style.flex = show ? '' : '1';
 }
 
 async function refreshDevices() {
@@ -680,134 +383,301 @@ async function refreshDevices() {
     const devices = await navigator.mediaDevices.enumerateDevices();
     const inputs  = devices.filter(d => d.kind === 'audioinput');
     const prev    = deviceSelect.value;
-
     deviceSelect.innerHTML = '';
-
     if (inputs.length === 0) {
-      const o = document.createElement('option');
-      o.value = '';
-      o.textContent = 'Нет аудиовходов';
-      deviceSelect.appendChild(o);
-      updateDeviceUI(0);
-      return;
+      const o = document.createElement('option'); o.value = ''; o.textContent = 'Нет аудиовходов'; deviceSelect.appendChild(o);
+      updateDeviceUI(0); return;
     }
-
     inputs.forEach((d, i) => {
-      const o = document.createElement('option');
-      o.value = d.deviceId;
-      o.textContent = d.label || `Аудиовход ${i + 1}`;
-      deviceSelect.appendChild(o);
+      const o = document.createElement('option'); o.value = d.deviceId; o.textContent = d.label || `Аудиовход ${i + 1}`; deviceSelect.appendChild(o);
     });
-
-    if (prev && [...deviceSelect.options].some(o => o.value === prev)) {
-      deviceSelect.value = prev;
-    }
-
+    if (prev && [...deviceSelect.options].some(o => o.value === prev)) deviceSelect.value = prev;
     updateDeviceUI(inputs.length);
-  } catch (e) {
-    console.warn('enumerateDevices:', e);
-  }
+  } catch (e) {}
 }
 
 /* =====================================================
-   КРУТИЛКИ
+   КРУТИЛКИ И КНОПКИ
    ===================================================== */
 document.querySelectorAll('.knob').forEach(el => {
-  const param  = el.dataset.param;
-  const pointer = el.querySelector('.knob-pointer');
-
-  let value   = params[param];
-  let dragging = false;
-  let startY   = 0;
-  let startVal = 0;
-  let pid      = null;
-
+  const param = el.dataset.param; const pointer = el.querySelector('.knob-pointer');
+  let value = params[param]; let dragging = false, startY = 0, startVal = 0, pid = null;
   function render() {
-    const angle = -135 + value * 270;
-    pointer.style.transform = `rotate(${angle}deg)`;
-    params[param] = value;
-    applyParams();
+    pointer.style.transform = `rotate(${-135 + value * 270}deg)`;
+    params[param] = value; applyParams();
   }
-
   el.addEventListener('pointerdown', e => {
-    e.preventDefault();
-    dragging = true;
-    pid = e.pointerId;
+    e.preventDefault(); dragging = true; pid = e.pointerId;
     try { el.setPointerCapture(pid); } catch (_) {}
-    startY   = e.clientY;
-    startVal = value;
-    el.classList.add('active');
+    startY = e.clientY; startVal = value; el.classList.add('active');
   });
-
   el.addEventListener('pointermove', e => {
     if (!dragging) return;
-    const dy    = startY - e.clientY;
-    const speed = e.shiftKey ? 450 : 150;
-    value = Math.min(1, Math.max(0, startVal + dy / speed));
-    render();
+    value = Math.min(1, Math.max(0, startVal + (startY - e.clientY) / (e.shiftKey ? 450 : 150))); render();
   });
-
-  const end = () => {
-    if (!dragging) return;
-    dragging = false;
-    el.classList.remove('active');
-    if (pid !== null) { try { el.releasePointerCapture(pid); } catch (_) {} }
-  };
-  el.addEventListener('pointerup', end);
-  el.addEventListener('pointercancel', end);
-
+  const end = () => { if (!dragging) return; dragging = false; el.classList.remove('active'); if (pid !== null) try { el.releasePointerCapture(pid); } catch (_) {} };
+  el.addEventListener('pointerup', end); el.addEventListener('pointercancel', end);
   el.addEventListener('dblclick', () => { value = 0.5; render(); });
-
   render();
 });
 
-/* =====================================================
-   КНОПКИ РЕЖИМОВ И КАБИНЕТОВ
-   ===================================================== */
 document.getElementById('modeRow').addEventListener('click', e => {
-  const btn = e.target.closest('button');
-  if (!btn) return;
+  const btn = e.target.closest('button'); if (!btn) return;
   document.querySelectorAll('#modeRow button').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  currentMode = btn.dataset.mode;
-  applyMode();
+  btn.classList.add('active'); currentMode = btn.dataset.mode; applyMode();
 });
 
 document.getElementById('cabRow').addEventListener('click', e => {
-  const btn = e.target.closest('button');
-  if (!btn) return;
+  const btn = e.target.closest('button'); if (!btn) return;
   document.querySelectorAll('#cabRow button').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  currentCab = btn.dataset.cab;
-  applyCab();
+  btn.classList.add('active'); currentCab = btn.dataset.cab; applyCab();
 });
+
+powerBtn.addEventListener('click', async () => {
+  try { isOn ? await stopAudio() : await startAudio(); }
+  catch (err) { statusText.textContent = 'НЕТ ДОСТУПА К МИКРОФОНУ'; statusText.style.color = '#ff7b7b'; }
+});
+refreshBtn.addEventListener('click', refreshDevices);
+deviceSelect.addEventListener('change', swapDevice);
+if (navigator.mediaDevices?.addEventListener) navigator.mediaDevices.addEventListener('devicechange', refreshDevices);
 
 /* =====================================================
-   УПРАВЛЕНИЕ
+   ═══════════════ ЗАПИСЬ ═══════════════
    ===================================================== */
-powerBtn.addEventListener('click', async () => {
-  try {
-    if (isOn) {
-      await stopAudio();
-    } else {
-      await startAudio();
+
+const recBtn     = document.getElementById('recBtn');
+const folderBtn  = document.getElementById('folderBtn');
+const recFolder  = document.getElementById('recFolder');
+const recStatus  = document.getElementById('recStatus');
+const recBody    = document.getElementById('recBody');
+const recTimer   = document.getElementById('recTimer');
+const waveCanvas = document.getElementById('recWave');
+const waveCtx    = waveCanvas.getContext('2d');
+
+let isRecording = false;
+let dirHandle = null;
+let mediaRecorder = null;
+let mediaDest = null;
+let recordedBlobs = [];
+let recStartTime = 0;
+let recTimerId = null;
+let waveRafId = null;
+let waveData = null;
+let analyserNode = null;
+
+const IDB_NAME = 'amposer-rec'; const IDB_STORE = 'handles'; const IDB_KEY = 'saveDir';
+
+function idbOpen() { return new Promise((res, rej) => { const req = indexedDB.open(IDB_NAME, 1); req.onupgradeneeded = () => req.result.createObjectStore(IDB_STORE); req.onsuccess = () => res(req.result); req.onerror = () => rej(req.error); }); }
+async function idbGet(key) { const db = await idbOpen(); return new Promise((res, rej) => { const r = db.transaction(IDB_STORE, 'readonly').objectStore(IDB_STORE).get(key); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }); }
+async function idbSet(key, val) { const db = await idbOpen(); return new Promise((res, rej) => { const tx = db.transaction(IDB_STORE, 'readwrite'); tx.objectStore(IDB_STORE).put(val, key); tx.oncomplete = () => res(); tx.onerror = () => rej(tx.error); }); }
+
+const FS_SUPPORTED = 'showDirectoryPicker' in window && 'FileSystemDirectoryHandle' in window;
+
+function modeLabel() { return currentMode.toUpperCase(); }
+function cabLabel()  { return currentCab === 'off' ? 'Off' : currentCab; }
+function pad3(n)     { return String(n).padStart(3, '0'); }
+
+// Функция конвертации сырых PCM данных в WAV (без сторонних библиотек)
+function audioBufferToWav(buffer) {
+  let numOfChan = buffer.numberOfChannels,
+      length = buffer.length * numOfChan * 2 + 44,
+      bufferArr = new ArrayBuffer(length),
+      view = new DataView(bufferArr),
+      channels = [], i, sample,
+      offset = 0, pos = 0;
+
+  const writeStr = (off, s) => { for (let i = 0; i < s.length; i++) view.setUint8(off + i, s.charCodeAt(i)); };
+  writeStr(0, 'RIFF'); view.setUint32(4, length - 8, true); writeStr(8, 'WAVE'); writeStr(12, 'fmt ');
+  view.setUint32(16, 16, true); view.setUint16(20, 1, true); view.setUint16(22, numOfChan, true);
+  view.setUint32(24, buffer.sampleRate, true); view.setUint32(28, buffer.sampleRate * 2 * numOfChan, true);
+  view.setUint16(32, numOfChan * 2, true); view.setUint16(34, 16, true); writeStr(36, 'data'); view.setUint32(40, length - 44, true);
+
+  for (i = 0; i < buffer.numberOfChannels; i++) channels.push(buffer.getChannelData(i));
+
+  while (pos < buffer.length) {
+    for (i = 0; i < numOfChan; i++) {
+      sample = Math.max(-1, Math.min(1, channels[i][pos]));
+      sample = sample < 0 ? sample * 0x8000 : sample * 0x7FFF;
+      view.setInt16(44 + offset, sample, true);
+      offset += 2;
     }
-  } catch (err) {
-    console.error(err);
-    statusText.textContent = 'НЕТ ДОСТУПА К МИКРОФОНУ';
-    statusText.style.color = '#ff7b7b';
+    pos++;
   }
-});
-
-refreshBtn.addEventListener('click', refreshDevices);
-
-deviceSelect.addEventListener('change', swapDevice);
-
-if (navigator.mediaDevices && navigator.mediaDevices.addEventListener) {
-  navigator.mediaDevices.addEventListener('devicechange', refreshDevices);
+  return new Blob([bufferArr], { type: 'audio/wav' });
 }
 
+function updateFolderLabel() {
+  if (dirHandle) {
+    recFolder.textContent = dirHandle.name || 'папка выбрана';
+    recFolder.style.color = '#7dff9a'; recFolder.title = dirHandle.name || '';
+  } else {
+    recFolder.textContent = 'папка не выбрана'; recFolder.style.color = '#888'; recFolder.title = '';
+  }
+}
+
+async function ensurePermission(handle) {
+  const opts = { mode: 'readwrite' };
+  if ((await handle.queryPermission(opts)) === 'granted') return true;
+  if ((await handle.requestPermission(opts)) === 'granted') return true;
+  return false;
+}
+
+async function pickFolder(force = false) {
+  if (!FS_SUPPORTED) throw new Error('Браузер не поддерживает File System Access API');
+  if (dirHandle && !force) return dirHandle;
+  const handle = await window.showDirectoryPicker({ mode: 'readwrite' });
+  dirHandle = handle;
+  try { await idbSet(IDB_KEY, handle); } catch (e) {}
+  updateFolderLabel();
+  return handle;
+}
+
+async function ensureDir() {
+  if (!dirHandle) {
+    try { const saved = await idbGet(IDB_KEY); if (saved) { dirHandle = saved; updateFolderLabel(); } } catch (e) {}
+  }
+  if (!dirHandle) await pickFolder(true);
+  if (!(await ensurePermission(dirHandle))) throw new Error('Нет прав на запись в папку');
+  return dirHandle;
+}
+
+async function nextSequenceNumber(handle) {
+  const prefix = `Amposer_${modeLabel()}_${cabLabel()}_`;
+  let max = 0;
+  try {
+    for await (const entry of handle.values()) {
+      if (entry.kind !== 'file') continue;
+      const n = entry.name;
+      if (!n.startsWith(prefix) || !n.toLowerCase().endsWith('.wav')) continue;
+      const mid = n.slice(prefix.length, -4);
+      const num = parseInt(mid, 10);
+      if (!isNaN(num) && num > max) max = num;
+    }
+  } catch (e) {}
+  return max + 1;
+}
+
+function startWave() {
+  if (!analyserNode) return;
+  waveData = new Uint8Array(analyserNode.fftSize);
+  const loop = () => {
+    if (!isRecording) return;
+    const w = waveCanvas.width, h = waveCanvas.height;
+    analyserNode.getByteTimeDomainData(waveData);
+    waveCtx.fillStyle = '#050505'; waveCtx.fillRect(0, 0, w, h);
+    waveCtx.strokeStyle = 'rgba(255,60,60,.25)'; waveCtx.lineWidth = 1;
+    waveCtx.beginPath(); waveCtx.moveTo(0, h / 2); waveCtx.lineTo(w, h / 2); waveCtx.stroke();
+    waveCtx.strokeStyle = '#ff5a5a'; waveCtx.lineWidth = 2; waveCtx.beginPath();
+    const step = w / waveData.length;
+    for (let i = 0; i < waveData.length; i++) {
+      const v = (waveData[i] - 128) / 128;
+      const y = h / 2 + v * (h / 2 - 4);
+      if (i === 0) waveCtx.moveTo(i * step, y); else waveCtx.lineTo(i * step, y);
+    }
+    waveCtx.stroke();
+    waveRafId = requestAnimationFrame(loop);
+  };
+  loop();
+}
+
+function stopWave() {
+  if (waveRafId) { cancelAnimationFrame(waveRafId); waveRafId = null; }
+  waveCtx.fillStyle = '#050505'; waveCtx.fillRect(0, 0, waveCanvas.width, waveCanvas.height);
+}
+
+function startTimer() {
+  recStartTime = performance.now(); recTimer.textContent = '00:00';
+  recTimerId = setInterval(() => {
+    const s = Math.floor((performance.now() - recStartTime) / 1000);
+    recTimer.textContent = `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
+  }, 200);
+}
+function stopTimer() { if (recTimerId) { clearInterval(recTimerId); recTimerId = null; } }
+
+async function startRecording() {
+  if (!FS_SUPPORTED) { recStatus.textContent = 'Нужен Chrome или Edge'; recStatus.style.color = '#ff7b7b'; return; }
+  if (!isOn || !audioCtx) { recStatus.textContent = 'Включите POWER'; recStatus.style.color = '#ff7b7b'; return; }
+  try { await ensureDir(); }
+  catch (e) { recStatus.textContent = 'Папка не выбрана'; recStatus.style.color = '#ff7b7b'; return; }
+
+  recordedBlobs = [];
+  // Создаем узел для захвата звука ПОСЛЕ всех эффектов
+  mediaDest = audioCtx.createMediaStreamDestination();
+  analyserNode = audioCtx.createAnalyser(); analyserNode.fftSize = 1024;
+  
+  chain.stereoOut.connect(mediaDest);
+  chain.stereoOut.connect(analyserNode);
+
+  let options = { mimeType: 'audio/webm' };
+  if (!MediaRecorder.isTypeSupported('audio/webm')) options = { mimeType: 'audio/ogg' };
+  
+  mediaRecorder = new MediaRecorder(mediaDest.stream, options);
+  mediaRecorder.ondataavailable = e => { if (e.data.size > 0) recordedBlobs.push(e.data); };
+  
+  mediaRecorder.onstop = async () => {
+    const webmBlob = new Blob(recordedBlobs, { type: options.mimeType });
+    const arrayBuffer = await webmBlob.arrayBuffer();
+    
+    // Конвертируем WebM/Opus в AudioBuffer и затем в WAV
+    audioCtx.decodeAudioData(arrayBuffer).then(async (audioBuffer) => {
+      const wavBlob = audioBufferToWav(audioBuffer);
+      try {
+        const handle = await ensureDir();
+        const num = await nextSequenceNumber(handle);
+        const fname = `Amposer_${modeLabel()}_${cabLabel()}_${pad3(num)}.wav`;
+        const fileHandle = await handle.getFileHandle(fname, { create: true });
+        const writable = await fileHandle.createWritable();
+        await writable.write(wavBlob);
+        await writable.close();
+        recStatus.textContent = `СОХРАНЕНО: ${fname}`; recStatus.style.color = '#7dff9a';
+      } catch (err) {
+        recStatus.textContent = 'Ошибка сохранения: ' + err.message; recStatus.style.color = '#ff7b7b';
+      }
+    }).catch(err => {
+      recStatus.textContent = 'Ошибка конвертации аудио'; recStatus.style.color = '#ff7b7b';
+    });
+  };
+
+  mediaRecorder.start();
+  isRecording = true;
+  recBtn.classList.add('recording'); recBody.classList.add('active'); folderBtn.disabled = true;
+  recStatus.textContent = 'ИДЁТ ЗАПИСЬ…'; recStatus.style.color = '#ff5a5a';
+  startTimer(); startWave();
+}
+
+async function stopRecording() {
+  if (!isRecording) return;
+  isRecording = false;
+  recBtn.classList.remove('recording'); folderBtn.disabled = false;
+  stopTimer(); stopWave();
+  
+  if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+  
+  if (chain.stereoOut) {
+    try { chain.stereoOut.disconnect(mediaDest); } catch(e){}
+    try { chain.stereoOut.disconnect(analyserNode); } catch(e){}
+  }
+  recStatus.textContent = 'Обработка...'; recStatus.style.color = '#ccc';
+}
+
+recBtn.addEventListener('click', async () => { isRecording ? await stopRecording() : await startRecording(); });
+folderBtn.addEventListener('click', async () => {
+  if (isRecording) return;
+  try { await pickFolder(true); recStatus.textContent = `Папка: ${dirHandle.name}`; recStatus.style.color = '#7dff9a'; }
+  catch (e) { if (e.name !== 'AbortError') { recStatus.textContent = 'Ошибка выбора папки'; recStatus.style.color = '#ff7b7b'; } }
+});
+
+// Инициализация
 refreshDevices();
+(function initRec() {
+  stopWave();
+  if (!FS_SUPPORTED) {
+    recBtn.disabled = true; folderBtn.disabled = true;
+    recStatus.textContent = 'Запись недоступна (нужен Chrome/Edge)'; recStatus.style.color = '#ff7b7b'; return;
+  }
+  idbGet(IDB_KEY).then(h => { if (h) { dirHandle = h; updateFolderLabel(); } }).catch(() => {});
+  updateFolderLabel();
+})();
 </script>
 </body>
 </html>
