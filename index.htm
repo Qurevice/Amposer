@@ -429,7 +429,7 @@
         CLASSIC<br><small>QMM-900</small>
       </div>
       <div class="amp-option metal-opt" data-amp="metal">
-        METAL<br><small>EVIL-666</small>
+        METAL<br><small>QMM-999</small>
       </div>
     </div>
   </div>
@@ -816,7 +816,7 @@ function setAmp(type) {
     currentMode = 'crunch';
   } else {
     ampEl.classList.add('metal-theme');
-    ampModelName.textContent = 'EVIL-666 · METAL';
+    ampModelName.textContent = 'QMM-999 · METAL';
     scopeColor = '#ff3333';
     modeRow.innerHTML = `
       <button data-mode="clean">CLEAN</button>
@@ -1060,7 +1060,7 @@ async function idbSet(key, val) { const db = await idbOpen(); return new Promise
 
 const FS_SUPPORTED = 'showDirectoryPicker' in window && 'FileSystemDirectoryHandle' in window;
 
-function ampLabel() { return currentAmp === 'classic' ? 'QMM' : 'EVIL'; }
+function ampLabel() { return currentAmp === 'classic' ? 'QMM' : 'QMM999'; }
 function modeLabel() { return currentMode.toUpperCase(); }
 function cabLabel()  { return currentCab === 'off' ? 'Off' : currentCab; }
 function pad3(n)     { return String(n).padStart(3, '0'); }
