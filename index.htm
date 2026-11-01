@@ -77,7 +77,7 @@
 
   /* ===== КОМБИК ===== */
   .amp {
-    width: 780px; max-width: 100%;
+    width: 860px; max-width: 100%;
     background: repeating-linear-gradient(45deg, rgba(255,255,255,.025) 0 1px, transparent 1px 4px), linear-gradient(180deg, #1c1c1c, #070707);
     border: 4px solid #b8962a; border-radius: 12px; padding: 12px;
     box-shadow: 0 30px 70px rgba(0,0,0,.9), inset 0 0 60px rgba(0,0,0,.9), 0 0 0 1px #000;
@@ -88,18 +88,58 @@
     box-shadow: inset 0 2px 4px rgba(255,255,255,.6), inset 0 -3px 8px rgba(0,0,0,.25);
     color: #1a1a1a;
   }
-  .panel-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid rgba(0,0,0,.25); }
+  .panel-top {
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 14px; flex-wrap: wrap;
+    margin-bottom: 10px; padding-bottom: 8px; border-bottom: 2px solid rgba(0,0,0,.25);
+  }
   .brand { font-family: 'Brush Script MT', cursive; font-size: 30px; color: #111; line-height: 1; text-shadow: 0 1px 0 rgba(255,255,255,.6); }
   .brand small { font-family: 'Segoe UI', sans-serif; font-size: 9px; letter-spacing: 4px; font-weight: 700; color: #5a4d2a; display: block; margin-top: -2px; }
   .model { font-size: 10px; letter-spacing: 3px; font-weight: 700; color: #5a4d2a; }
-  .panel-body { display: flex; gap: 14px; align-items: stretch; flex-wrap: wrap; }
-  .module { background: linear-gradient(180deg, #141414, #050505); border-radius: 6px; padding: 10px 12px 12px; border: 1px solid #000; min-width: 190px; }
-  .module-title { font-size: 9px; letter-spacing: 2.5px; color: #c9a227; font-weight: 700; margin-bottom: 9px; text-align: center; }
-  .btn-row { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
-  .btn-row button { padding: 8px 11px; font-size: 10px; font-weight: 700; letter-spacing: 1px; border-radius: 4px; border: 1px solid #333; background: linear-gradient(180deg, #262626, #131313); color: #8a8a8a; cursor: pointer; transition: .15s; box-shadow: 0 2px 0 #000; }
+
+  /* Основной контейнер разделен на 2 ряда */
+  .panel-body { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 8px; 
+  }
+
+  /* ВЕРХНИЙ РЯД: Модули */
+  .modules-row { 
+    display: flex; 
+    gap: 8px; 
+    width: 100%; 
+    flex-wrap: nowrap; 
+  }
+  
+  /* Модули равномерно делят ширину. Уменьшили вертикальные отступы для компактности */
+  .module { 
+    background: linear-gradient(180deg, #141414, #050505); 
+    border-radius: 6px; padding: 8px 8px 9px; border: 1px solid #000; 
+    display: flex; flex-direction: column; justify-content: center; 
+    flex: 1;
+    min-width: 0; 
+  }
+  .module-title { font-size: 9px; letter-spacing: 2.5px; color: #c9a227; font-weight: 700; margin-bottom: 6px; text-align: center; }
+  
+  /* Кнопки всегда в линию на десктопе */
+  .btn-row { display: flex; gap: 4px; flex-wrap: nowrap; justify-content: center; }
+  .btn-row button { 
+    padding: 6px 6px; font-size: 9px; font-weight: 700; letter-spacing: 1px; 
+    border-radius: 4px; border: 1px solid #333; background: linear-gradient(180deg, #262626, #131313); 
+    color: #8a8a8a; cursor: pointer; transition: .15s; box-shadow: 0 2px 0 #000; 
+    white-space: nowrap; 
+  }
   .btn-row button:hover { color: #ccc; background: linear-gradient(180deg, #333, #1a1a1a); }
   .btn-row button.active { background: linear-gradient(180deg, #e8c84a, #b8962a); color: #1a1400; border-color: #7a6418; box-shadow: 0 0 12px rgba(230,190,60,.6); }
-  .knob-zone { background: linear-gradient(180deg, #141414, #050505); border-radius: 6px; padding: 12px 14px 10px; border: 1px solid #000; flex: 1; display: flex; gap: 14px; align-items: flex-start; justify-content: center; flex-wrap: wrap; }
+  
+  /* НИЖНИЙ РЯД: Крутилки */
+  .knob-zone { 
+    background: linear-gradient(180deg, #141414, #050505); 
+    border-radius: 6px; padding: 10px 14px 8px; border: 1px solid #000; 
+    display: flex; gap: 14px; align-items: center; justify-content: center; 
+    width: 100%;
+  }
   .knob-group { display: flex; gap: 14px; }
   .knob-divider { width: 1px; align-self: stretch; background: linear-gradient(180deg, transparent, #444, transparent); margin: 4px 2px; }
   .knob { display: flex; flex-direction: column; align-items: center; gap: 7px; cursor: ns-resize; touch-action: none; }
@@ -107,14 +147,164 @@
   .knob-pointer { position: absolute; inset: 0; transform-origin: 50% 50%; transform: rotate(-135deg); pointer-events: none; }
   .knob-pointer::before { content: ''; position: absolute; left: 50%; top: 5px; width: 3px; height: 17px; margin-left: -1.5px; background: linear-gradient(180deg, #fff, #b8b8b8); border-radius: 2px; }
   .knob-name { font-size: 9px; letter-spacing: 1.5px; font-weight: 700; color: #c9a227; }
-  .amp-grille { margin-top: 12px; height: 200px; border-radius: 6px; border: 1px solid #000; background: repeating-linear-gradient(0deg, #1c1712 0 2px, #0d0a08 2px 4px), repeating-linear-gradient(90deg, rgba(255,255,255,.035) 0 2px, transparent 2px 4px), #100d0b; display: flex; align-items: center; justify-content: center; }
-  .logo-plate { background: linear-gradient(180deg, #f0e6c8, #cdbb8c); border: 2px solid #8a7a4a; border-radius: 4px; padding: 8px 30px; font-family: 'Brush Script MT', cursive; font-size: 34px; color: #111; }
-  .hint { text-align: center; font-size: 10px; color: #6a6a6a; margin-top: 10px; }
+  
+  /* ===== МОДУЛЬ ЭФФЕКТОВ ===== */
+  .fx-switches {
+    display: flex; gap: 10px; justify-content: center; align-items: flex-end; padding-top: 2px;
+  }
+  .fx-sw {
+    display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer;
+  }
+  
+  .fx-btn {
+    width: 44px; height: 22px;
+    border-radius: 3px;
+    border: 2px solid #111;
+    background: #0a0a0a;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.8), 0 1px 2px rgba(0,0,0,0.5);
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.1s, box-shadow 0.1s;
+    outline: none;
+    padding: 0;
+  }
+  .fx-btn:active { transform: scale(0.95); }
+  
+  .fx-btn::after {
+    content: ''; width: 12px; height: 6px; border-radius: 2px;
+    transition: box-shadow 0.3s, background 0.3s, filter 0.3s;
+    box-shadow: inset 0 0 3px rgba(0,0,0,0.9);
+    filter: brightness(0.4);
+  }
 
+  .fx-sw[data-fx="chorus"] .fx-btn::after { background: #1f6630; }
+  .fx-sw[data-fx="delay"]  .fx-btn::after { background: #1f5c6b; }
+  .fx-sw[data-fx="reverb"] .fx-btn::after { background: #542d80; }
+
+  .fx-sw[data-fx="chorus"].on .fx-btn::after { 
+    background: #39ff6a; filter: brightness(1.3);
+    box-shadow: 0 0 8px #39ff6a, 0 0 12px #39ff6a, inset 0 0 2px #fff; 
+  }
+  .fx-sw[data-fx="delay"].on .fx-btn::after { 
+    background: #4ad9ff; filter: brightness(1.3);
+    box-shadow: 0 0 8px #4ad9ff, 0 0 12px #4ad9ff, inset 0 0 2px #fff; 
+  }
+  .fx-sw[data-fx="reverb"].on .fx-btn::after { 
+    background: #b06bff; filter: brightness(1.3);
+    box-shadow: 0 0 8px #b06bff, 0 0 12px #b06bff, inset 0 0 2px #fff; 
+  }
+
+  .fx-name { font-size: 8px; letter-spacing: 1px; font-weight: 700; color: #a89b75; }
+
+  /* ===== КНОПКИ TAP И LOW CUT ===== */
+  .aux-buttons { display: flex; gap: 6px; justify-content: center; margin-top: 8px; }
+  .tap-btn, .cut-btn {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 9px; font-weight: 700; letter-spacing: 1px;
+    color: #888;
+    background: linear-gradient(180deg, #111, #050505);
+    border: 1px solid #222;
+    padding: 3px 8px;
+    border-radius: 3px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.1);
+    transition: all 0.1s;
+    outline: none;
+  }
+  .tap-btn:active, .cut-btn:active { 
+    transform: translateY(1px); 
+    box-shadow: 0 1px 2px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.05);
+  }
+  .tap-btn.flash {
+    color: #fff;
+    background: linear-gradient(180deg, #222, #111);
+    border-color: #444;
+    box-shadow: 0 0 10px rgba(255,255,255,0.2);
+  }
+  .cut-btn.active {
+    color: #fff;
+    border-color: #ff5a5a;
+    box-shadow: 0 0 10px rgba(255,90,90,0.4);
+    background: linear-gradient(180deg, #331111, #110505);
+  }
+
+  /* ===== МАЛЕНЬКИЙ ОСЦИЛЛОГРАФ (MONITOR) ===== */
+  .scope-screen {
+    width: 100%; height: 50px; background: #0a0f0a; border-radius: 4px; /* Высота уменьшена до 50px */
+    border: 2px solid #1a1a1a; box-shadow: inset 0 0 15px rgba(0,0,0,0.95), 0 0 8px rgba(57,255,106,0.08);
+    position: relative; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .scope-screen::after {
+    content: ''; position: absolute; inset: 0; pointer-events: none; border-radius: 2px;
+    background: radial-gradient(circle at 50% 30%, transparent 30%, rgba(0,0,0,0.6) 100%);
+    box-shadow: inset 0 0 4px rgba(255,255,255,0.1);
+  }
+  #scopeCanvas { width: 100%; height: 100%; display: block; }
+
+  .amp-grille { margin-top: 10px; height: 200px; border-radius: 6px; border: 1px solid #000; background: repeating-linear-gradient(0deg, #1c1712 0 2px, #0d0a08 2px 4px), repeating-linear-gradient(90deg, rgba(255,255,255,.035) 0 2px, transparent 2px 4px), #100d0b; display: flex; align-items: center; justify-content: center; }
+  .logo-plate { background: linear-gradient(180deg, #f0e6c8, #cdbb8c); border: 2px solid #8a7a4a; border-radius: 4px; padding: 8px 30px; font-family: 'Brush Script MT', cursive; font-size: 34px; color: #111; }
+  .hint { text-align: center; font-size: 10px; color: #6a6a6a; margin-top: 10px; line-height: 1.6; }
+
+  /* =====================================================
+     МОБИЛЬНАЯ АДАПТАЦИЯ
+     ===================================================== */
   @media (max-width: 860px) {
-    body { flex-direction: column; padding-top: 120px; }
-    .input-panel { position: relative; top: 0; left: 0; width: 100%; max-width: 780px; margin-bottom: 16px; }
-    .rec-panel { position: relative; top: 0; right: 0; width: 100%; max-width: 780px; margin-bottom: 16px; order: -1; }
+    body { 
+      flex-direction: column; 
+      padding: 20px 10px 100px 10px; 
+    }
+    .input-panel, .rec-panel { 
+      position: relative; 
+      top: 0; left: 0; right: 0; 
+      width: 100%; 
+      max-width: 860px; 
+      margin-bottom: 12px; 
+    }
+    .rec-panel { order: -1; }
+    
+    .amp { width: 100%; padding: 8px; }
+    .amp-panel { padding: 10px; }
+    .panel-top { justify-content: center; gap: 8px; margin-bottom: 8px; padding-bottom: 6px; }
+    
+    /* Модули выстраиваются в столбик */
+    .modules-row { 
+      flex-direction: column; 
+      gap: 8px; 
+    }
+    .module { 
+      width: 100%; 
+      flex: none;
+      padding: 8px 6px;
+    }
+    
+    /* Кнопки разрешают перенос на новую строку */
+    .btn-row { 
+      flex-wrap: wrap; 
+      gap: 6px; 
+    }
+    .btn-row button { 
+      flex: 1 1 auto; 
+      white-space: normal; 
+      padding: 8px 4px;
+      font-size: 10px;
+    }
+    
+    /* Крутилки */
+    .knob-zone {
+      gap: 8px;
+      padding: 10px 6px;
+      flex-wrap: wrap;
+    }
+    .knob-group { gap: 8px; }
+    .knob-dial { width: 44px; height: 44px; }
+    .knob-pointer::before { height: 13px; top: 4px; }
+    .knob-name { font-size: 8px; }
+    
+    /* Эффекты */
+    .fx-switches { gap: 6px; }
+    .fx-btn { width: 38px; height: 20px; }
+    .fx-name { font-size: 7px; letter-spacing: 0.5px; }
   }
 </style>
 </head>
@@ -153,26 +343,68 @@
   <div class="amp-panel">
     <div class="panel-top">
       <div class="brand">Amposer<small>STYLE OVERDRIVE</small></div>
-      <div class="model">JCM-900 · SIM</div>
+      <!-- Заменили JCM на QMM -->
+      <div class="model">QMM-900 · SIM</div>
     </div>
+
     <div class="panel-body">
-      <div class="module">
-        <div class="module-title">OVERDRIVE</div>
-        <div class="btn-row" id="modeRow">
-          <button data-mode="clean">CLEAN</button>
-          <button data-mode="crunch" class="active">CRUNCH</button>
-          <button data-mode="lead">LEAD</button>
+      <!-- ВЕРХНИЙ РЯД (4 модуля) -->
+      <div class="modules-row">
+        <!-- 1. OVERDRIVE -->
+        <div class="module">
+          <div class="module-title">OVERDRIVE</div>
+          <div class="btn-row" id="modeRow">
+            <button data-mode="clean">CLEAN</button>
+            <button data-mode="crunch" class="active">CRUNCH</button>
+            <button data-mode="lead">LEAD</button>
+          </div>
+        </div>
+        
+        <!-- 2. CABINET SIM -->
+        <div class="module">
+          <div class="module-title">CABINET SIM</div>
+          <div class="btn-row" id="cabRow">
+            <button data-cab="off">OFF</button>
+            <button data-cab="1x12">1×12</button>
+            <button data-cab="2x12">2×12</button>
+            <button data-cab="4x12" class="active">4×12</button>
+          </div>
+        </div>
+
+        <!-- 3. FX LOOP -->
+        <div class="module">
+          <div class="module-title">FX LOOP</div>
+          <div class="fx-switches">
+            <div class="fx-sw" data-fx="chorus" title="Chorus">
+              <button class="fx-btn"></button>
+              <div class="fx-name">CHORUS</div>
+            </div>
+            <div class="fx-sw" data-fx="delay" title="Delay">
+              <button class="fx-btn"></button>
+              <div class="fx-name">DELAY</div>
+            </div>
+            <div class="fx-sw" data-fx="reverb" title="Plate Reverb">
+              <button class="fx-btn"></button>
+              <div class="fx-name">REVERB</div>
+            </div>
+          </div>
+          <div class="aux-buttons">
+            <button class="tap-btn" id="tapBtn">TAP</button>
+            <button class="cut-btn" id="cutBtn">LOW CUT</button>
+          </div>
+        </div>
+
+        <!-- 4. МОНИТОР -->
+        <div class="module">
+          <div class="module-title">MONITOR</div>
+          <div class="scope-screen">
+            <!-- Высота canvas уменьшена до 50 для соответствия CSS -->
+            <canvas id="scopeCanvas" width="240" height="50"></canvas>
+          </div>
         </div>
       </div>
-      <div class="module">
-        <div class="module-title">CABINET SIM</div>
-        <div class="btn-row" id="cabRow">
-          <button data-cab="off">OFF</button>
-          <button data-cab="1x12">1×12</button>
-          <button data-cab="2x12">2×12</button>
-          <button data-cab="4x12" class="active">4×12</button>
-        </div>
-      </div>
+
+      <!-- НИЖНИЙ РЯД (Крутилки) -->
       <div class="knob-zone">
         <div class="knob-group">
           <div class="knob" data-param="gain"><div class="knob-dial"><div class="knob-pointer"></div></div><div class="knob-name">GAIN</div></div>
@@ -188,7 +420,10 @@
     </div>
   </div>
   <div class="amp-grille"><div class="logo-plate">Amposer</div></div>
-  <div class="hint">Крутилки: тяни вверх/вниз · Shift — точно · двойной клик — сброс<br>Запись: нажми ● — файл WAV сохранится в выбранную папку</div>
+  <div class="hint">
+    Крутилки: тяни вверх/вниз · двойной клик — сброс<br>
+    Запись: нажми ● — файл WAV сохранится в выбранную папку
+  </div>
 </div>
 
 <script>
@@ -198,6 +433,9 @@
 const params = { gain: 0.5, volume: 0.5, low: 0.5, mid: 0.5, high: 0.5 };
 let currentMode = 'crunch';
 let currentCab  = '4x12';
+
+const fxState = { chorus: false, delay: false, reverb: false };
+let lowCutState = false;
 
 let audioCtx = null;
 let stream = null;
@@ -211,6 +449,59 @@ const refreshBtn   = document.getElementById('refreshBtn');
 const ledEl        = document.getElementById('led');
 const statusText   = document.getElementById('statusText');
 const ipTitle      = document.querySelector('.ip-title');
+
+/* =====================================================
+   ОСЦИЛЛОГРАФ
+   ===================================================== */
+const scopeCanvas = document.getElementById('scopeCanvas');
+const scopeCtx    = scopeCanvas.getContext('2d');
+let scopeData     = null;
+let scopeRafId    = null;
+
+function drawScope() {
+  if (!isOn || !chain.scopeAnalyser) {
+    scopeRafId = requestAnimationFrame(drawScope);
+    return;
+  }
+
+  const w = scopeCanvas.width;
+  const h = scopeCanvas.height;
+
+  if (!scopeData) scopeData = new Uint8Array(chain.scopeAnalyser.fftSize);
+  chain.scopeAnalyser.getByteTimeDomainData(scopeData);
+
+  scopeCtx.fillStyle = '#0a0f0a';
+  scopeCtx.fillRect(0, 0, w, h);
+
+  // Сетка
+  scopeCtx.strokeStyle = 'rgba(57, 255, 106, 0.15)';
+  scopeCtx.lineWidth = 1;
+  scopeCtx.beginPath();
+  for (let i = 1; i < 3; i++) {
+    scopeCtx.moveTo(0, (h / 3) * i); scopeCtx.lineTo(w, (h / 3) * i);
+    scopeCtx.moveTo((w / 3) * i, 0); scopeCtx.lineTo((w / 3) * i, h);
+  }
+  scopeCtx.stroke();
+
+  // Волна
+  scopeCtx.lineWidth = 1.5;
+  scopeCtx.strokeStyle = '#39ff6a';
+  scopeCtx.shadowBlur = 5;
+  scopeCtx.shadowColor = '#39ff6a';
+  scopeCtx.beginPath();
+
+  const step = w / scopeData.length;
+  for (let i = 0; i < scopeData.length; i++) {
+    const v = (scopeData[i] - 128) / 128;
+    const y = h / 2 + v * (h / 2 - 3);
+    if (i === 0) scopeCtx.moveTo(i * step, y);
+    else scopeCtx.lineTo(i * step, y);
+  }
+  scopeCtx.stroke();
+  
+  scopeCtx.shadowBlur = 0;
+  scopeRafId = requestAnimationFrame(drawScope);
+}
 
 /* =====================================================
    УТИЛИТЫ И ГЕНЕРАЦИЯ ЗВУКА
@@ -234,6 +525,27 @@ const CAB_PRESETS = {
   '2x12': { hp: 92,  lp1: 5600,  lp2: 6600,  peak: 4,   peakF: 132, dip: -2.5, dipF: 660 },
   '4x12': { hp: 80,  lp1: 4500,  lp2: 5300,  peak: 5,   peakF: 110, dip: -3,   dipF: 600 }
 };
+
+function makePlateIR(ctx, seconds, decay) {
+  const rate = ctx.sampleRate;
+  const len  = Math.floor(rate * seconds);
+  const pre  = Math.floor(rate * 0.014);
+  const buf  = ctx.createBuffer(2, len, rate);
+
+  for (let ch = 0; ch < 2; ch++) {
+    const data = buf.getChannelData(ch);
+    let lp = 0;
+    for (let i = 0; i < len; i++) {
+      if (i < pre) { data[i] = 0; continue; }
+      const t   = (i - pre) / (len - pre);
+      const env = Math.pow(1 - t, decay);
+      const n   = Math.random() * 2 - 1;
+      lp = lp * 0.4 + n * 0.6;
+      data[i] = lp * env;
+    }
+  }
+  return buf;
+}
 
 /* =====================================================
    ПОСТРОЕНИЕ АУДИОЦЕПИ
@@ -259,6 +571,11 @@ function buildChain() {
   chain.stereoOut = ctx.createGain();
   chain.stereoOut.channelCount = 2; chain.stereoOut.channelCountMode = 'explicit'; chain.stereoOut.channelInterpretation = 'speakers';
 
+  // Анализатор для осциллографа
+  chain.scopeAnalyser = ctx.createAnalyser();
+  chain.scopeAnalyser.fftSize = 512;
+  chain.stereoOut.connect(chain.scopeAnalyser);
+
   chain.low.type = 'lowshelf'; chain.low.frequency.value = 120;
   chain.mid.type = 'peaking'; chain.mid.frequency.value = 750; chain.mid.Q.value = 0.8;
   chain.high.type = 'highshelf'; chain.high.frequency.value = 3200;
@@ -270,6 +587,94 @@ function buildChain() {
 
   chain.shaper.curve = makeCurve(currentMode);
 
+  /* ---------- CHORUS ---------- */
+  chain.chorusIn    = ctx.createGain();
+  chain.chorusOut   = ctx.createGain();
+  chain.chorusDry   = ctx.createGain();
+  chain.chorusSend  = ctx.createGain();
+  chain.chorusWet   = ctx.createGain();
+  chain.chorusDelay = ctx.createDelay(0.1);
+  chain.chorusDelay.delayTime.value = 0.024;
+  chain.chorusLFO   = ctx.createOscillator();
+  chain.chorusLFO.type = 'sine';
+  chain.chorusLFO.frequency.value = 1.4;
+  chain.chorusDepth = ctx.createGain();
+  chain.chorusDepth.gain.value = 0.0026;
+  chain.chorusLFO.connect(chain.chorusDepth);
+  chain.chorusDepth.connect(chain.chorusDelay.delayTime);
+  chain.chorusLFO.start();
+
+  chain.chorusDry.gain.value  = 1;
+  chain.chorusSend.gain.value = 0;
+  chain.chorusWet.gain.value  = 0;
+
+  chain.chorusIn.connect(chain.chorusDry);
+  chain.chorusDry.connect(chain.chorusOut);
+  chain.chorusIn.connect(chain.chorusSend);
+  chain.chorusSend.connect(chain.chorusDelay);
+  chain.chorusDelay.connect(chain.chorusWet);
+  chain.chorusWet.connect(chain.chorusOut);
+
+  /* ---------- DELAY ---------- */
+  chain.delayIn    = ctx.createGain();
+  chain.delayOut   = ctx.createGain();
+  chain.delayDry   = ctx.createGain();
+  chain.delaySend  = ctx.createGain();
+  chain.delayWet   = ctx.createGain();
+  chain.delayHPF   = ctx.createBiquadFilter(); 
+  chain.delayNode  = ctx.createDelay(2.0);
+  chain.delayNode.delayTime.value = 0.36;
+  chain.delayFb    = ctx.createGain();
+  chain.delayFb.gain.value = 0.30; 
+  chain.delayTone  = ctx.createBiquadFilter();
+  chain.delayTone.type = 'lowpass';
+  chain.delayTone.frequency.value = 3000;
+  chain.delayTone.Q.value = 0.7;
+
+  chain.delayHPF.type = 'highpass';
+  chain.delayHPF.frequency.value = 90;
+
+  chain.delayDry.gain.value  = 1;
+  chain.delaySend.gain.value = 0;
+  chain.delayWet.gain.value  = 0;
+
+  chain.delayIn.connect(chain.delayDry);
+  chain.delayDry.connect(chain.delayOut);
+  chain.delayIn.connect(chain.delaySend);
+  chain.delaySend.connect(chain.delayHPF);
+  chain.delayHPF.connect(chain.delayNode);
+  chain.delayNode.connect(chain.delayTone);
+  chain.delayTone.connect(chain.delayFb);
+  chain.delayFb.connect(chain.delayNode);
+  chain.delayNode.connect(chain.delayWet);
+  chain.delayWet.connect(chain.delayOut);
+
+  /* ---------- PLATE REVERB ---------- */
+  chain.revIn    = ctx.createGain();
+  chain.revOut   = ctx.createGain();
+  chain.revDry   = ctx.createGain();
+  chain.revSend  = ctx.createGain();
+  chain.revWet   = ctx.createGain();
+  chain.revHP    = ctx.createBiquadFilter();
+  chain.conv     = ctx.createConvolver();
+
+  chain.revHP.type = 'highpass';
+  chain.revHP.frequency.value = 90;
+  chain.conv.buffer = makePlateIR(ctx, 2.6, 2.8);
+
+  chain.revDry.gain.value  = 1;
+  chain.revSend.gain.value = 0;
+  chain.revWet.gain.value  = 0;
+
+  chain.revIn.connect(chain.revDry);
+  chain.revDry.connect(chain.revOut);
+  chain.revIn.connect(chain.revSend);
+  chain.revSend.connect(chain.revHP);
+  chain.revHP.connect(chain.conv);
+  chain.conv.connect(chain.revWet);
+  chain.revWet.connect(chain.revOut);
+
+  /* ---------- СОЕДИНЕНИЕ ЦЕПИ ---------- */
   chain.inputGain.connect(chain.shaper);
   chain.shaper.connect(chain.postGain);
   chain.postGain.connect(chain.low);
@@ -280,13 +685,20 @@ function buildChain() {
   chain.cabLP1.connect(chain.cabLP2);
   chain.cabLP2.connect(chain.cabPeak);
   chain.cabPeak.connect(chain.cabDip);
-  chain.cabDip.connect(chain.volume);
+  
+  chain.cabDip.connect(chain.chorusIn);
+  chain.chorusOut.connect(chain.delayIn);
+  chain.delayOut.connect(chain.revIn);
+  chain.revOut.connect(chain.volume);
+  
   chain.volume.connect(chain.limiter);
   chain.limiter.connect(chain.stereoOut);
   chain.stereoOut.connect(ctx.destination);
 
   applyParams();
   applyCab();
+  applyFx();
+  applyLowCut();
 }
 
 function applyParams() {
@@ -315,6 +727,38 @@ function applyCab() {
 
 function applyMode() { if (audioCtx && chain.shaper) chain.shaper.curve = makeCurve(currentMode); }
 
+function applyFx() {
+  if (!audioCtx || !chain.chorusIn) return;
+  const t = audioCtx.currentTime, S = 0.03;
+
+  chain.chorusDry.gain.setTargetAtTime(fxState.chorus ? 0.85 : 1, t, S);
+  chain.chorusSend.gain.setTargetAtTime(fxState.chorus ? 1 : 0, t, S);
+  chain.chorusWet.gain.setTargetAtTime(fxState.chorus ? 0.75 : 0, t, S);
+
+  chain.delayDry.gain.setTargetAtTime(fxState.delay ? 0.9 : 1, t, S);
+  chain.delaySend.gain.setTargetAtTime(fxState.delay ? 1 : 0, t, S);
+  chain.delayWet.gain.setTargetAtTime(fxState.delay ? 0.35 : 0, t, S);
+  chain.delayFb.gain.setTargetAtTime(fxState.delay ? 0.30 : 0, t, S);
+
+  chain.revDry.gain.setTargetAtTime(fxState.reverb ? 0.92 : 1, t, S);
+  chain.revSend.gain.setTargetAtTime(fxState.reverb ? 1 : 0, t, S);
+  chain.revWet.gain.setTargetAtTime(fxState.reverb ? 0.5 : 0, t, S);
+}
+
+function applyLowCut() {
+  if (!audioCtx || !chain.delayHPF || !chain.revHP) return;
+  const t = audioCtx.currentTime;
+  const S = 0.02;
+  
+  if (lowCutState) {
+    chain.delayHPF.frequency.setTargetAtTime(120, t, S);
+    chain.revHP.frequency.setTargetAtTime(200, t, S);
+  } else {
+    chain.delayHPF.frequency.setTargetAtTime(90, t, S);
+    chain.revHP.frequency.setTargetAtTime(90, t, S);
+  }
+}
+
 /* =====================================================
    ВКЛЮЧЕНИЕ / ВЫКЛЮЧЕНИЕ
    ===================================================== */
@@ -338,6 +782,9 @@ async function startAudio() {
   powerBtn.textContent = 'POWER OFF'; powerBtn.classList.add('on');
   ledEl.classList.add('on');
   statusText.textContent = 'ВКЛЮЧЁН · ИДЁТ СИГНАЛ'; statusText.style.color = '#7dff9a';
+  
+  if (!scopeRafId) drawScope();
+  
   await refreshDevices();
 }
 
@@ -351,6 +798,10 @@ async function stopAudio() {
   powerBtn.textContent = 'POWER ON'; powerBtn.classList.remove('on');
   ledEl.classList.remove('on');
   statusText.textContent = 'ВЫКЛЮЧЕН'; statusText.style.color = '#888';
+  
+  if (scopeRafId) { cancelAnimationFrame(scopeRafId); scopeRafId = null; }
+  scopeCtx.fillStyle = '#0a0f0a';
+  scopeCtx.fillRect(0, 0, scopeCanvas.width, scopeCanvas.height);
 }
 
 async function swapDevice() {
@@ -371,7 +822,7 @@ async function swapDevice() {
 }
 
 function updateDeviceUI(count) {
-  const show = count >= 1; // Исправлено: показываем даже если 1 устройство
+  const show = count >= 1;
   ipTitle.style.display = show ? '' : 'none';
   deviceSelect.style.display = show ? '' : 'none';
   refreshBtn.style.display = show ? '' : 'none';
@@ -433,6 +884,67 @@ document.getElementById('cabRow').addEventListener('click', e => {
   btn.classList.add('active'); currentCab = btn.dataset.cab; applyCab();
 });
 
+document.querySelectorAll('.fx-sw').forEach(el => {
+  el.addEventListener('click', () => {
+    const fx = el.dataset.fx;
+    fxState[fx] = !fxState[fx];
+    el.classList.toggle('on', fxState[fx]);
+    applyFx();
+  });
+});
+
+const cutBtn = document.getElementById('cutBtn');
+cutBtn.addEventListener('click', () => {
+  lowCutState = !lowCutState;
+  cutBtn.classList.toggle('active', lowCutState);
+  applyLowCut();
+});
+
+const tapBtn = document.getElementById('tapBtn');
+let tapTimes = [];
+let tapTimeout = null;
+
+tapBtn.addEventListener('click', () => {
+  const now = performance.now();
+  
+  tapBtn.classList.add('flash');
+  setTimeout(() => tapBtn.classList.remove('flash'), 100);
+
+  if (tapTimes.length > 0 && now - tapTimes[tapTimes.length - 1] > 2000) {
+    tapTimes = [];
+  }
+
+  tapTimes.push(now);
+
+  if (tapTimes.length > 4) {
+    tapTimes.shift();
+  }
+
+  if (tapTimes.length >= 2) {
+    let intervals = [];
+    for (let i = 1; i < tapTimes.length; i++) {
+      intervals.push(tapTimes[i] - tapTimes[i - 1]);
+    }
+    const avgInterval = intervals.reduce((a, b) => a + b, 0) / intervals.length;
+    let delayTime = Math.min(avgInterval / 1000, 1.9);
+    
+    if (audioCtx && chain.delayNode) {
+      chain.delayNode.delayTime.setTargetAtTime(delayTime, audioCtx.currentTime, 0.05);
+    }
+    
+    const bpm = Math.round(60000 / avgInterval);
+    statusText.textContent = `DELAY: ${bpm} BPM`;
+    statusText.style.color = '#4ad9ff';
+    clearTimeout(tapTimeout);
+    tapTimeout = setTimeout(() => {
+      if (isOn) {
+        statusText.textContent = 'ВКЛЮЧЁН · ИДЁТ СИГНАЛ';
+        statusText.style.color = '#7dff9a';
+      }
+    }, 2000);
+  }
+});
+
 powerBtn.addEventListener('click', async () => {
   try { isOn ? await stopAudio() : await startAudio(); }
   catch (err) { statusText.textContent = 'НЕТ ДОСТУПА К МИКРОФОНУ'; statusText.style.color = '#ff7b7b'; }
@@ -477,7 +989,14 @@ function modeLabel() { return currentMode.toUpperCase(); }
 function cabLabel()  { return currentCab === 'off' ? 'Off' : currentCab; }
 function pad3(n)     { return String(n).padStart(3, '0'); }
 
-// Функция конвертации сырых PCM данных в WAV (без сторонних библиотек)
+function getFxLabel() {
+  const active = [];
+  if (fxState.chorus) active.push('CHORUS');
+  if (fxState.delay)  active.push('DELAY');
+  if (fxState.reverb) active.push('REVERB');
+  return active.length > 0 ? '_' + active.join('-') : '';
+}
+
 function audioBufferToWav(buffer) {
   let numOfChan = buffer.numberOfChannels,
       length = buffer.length * numOfChan * 2 + 44,
@@ -542,7 +1061,7 @@ async function ensureDir() {
 }
 
 async function nextSequenceNumber(handle) {
-  const prefix = `Amposer_${modeLabel()}_${cabLabel()}_`;
+  const prefix = `Amposer_${modeLabel()}_${cabLabel()}${getFxLabel()}_`;
   let max = 0;
   try {
     for await (const entry of handle.values()) {
@@ -601,30 +1120,28 @@ async function startRecording() {
   catch (e) { recStatus.textContent = 'Папка не выбрана'; recStatus.style.color = '#ff7b7b'; return; }
 
   recordedBlobs = [];
-  // Создаем узел для захвата звука ПОСЛЕ всех эффектов
   mediaDest = audioCtx.createMediaStreamDestination();
   analyserNode = audioCtx.createAnalyser(); analyserNode.fftSize = 1024;
-  
+
   chain.stereoOut.connect(mediaDest);
   chain.stereoOut.connect(analyserNode);
 
   let options = { mimeType: 'audio/webm' };
   if (!MediaRecorder.isTypeSupported('audio/webm')) options = { mimeType: 'audio/ogg' };
-  
+
   mediaRecorder = new MediaRecorder(mediaDest.stream, options);
   mediaRecorder.ondataavailable = e => { if (e.data.size > 0) recordedBlobs.push(e.data); };
-  
+
   mediaRecorder.onstop = async () => {
     const webmBlob = new Blob(recordedBlobs, { type: options.mimeType });
     const arrayBuffer = await webmBlob.arrayBuffer();
-    
-    // Конвертируем WebM/Opus в AudioBuffer и затем в WAV
+
     audioCtx.decodeAudioData(arrayBuffer).then(async (audioBuffer) => {
       const wavBlob = audioBufferToWav(audioBuffer);
       try {
         const handle = await ensureDir();
         const num = await nextSequenceNumber(handle);
-        const fname = `Amposer_${modeLabel()}_${cabLabel()}_${pad3(num)}.wav`;
+        const fname = `Amposer_${modeLabel()}_${cabLabel()}${getFxLabel()}_${pad3(num)}.wav`;
         const fileHandle = await handle.getFileHandle(fname, { create: true });
         const writable = await fileHandle.createWritable();
         await writable.write(wavBlob);
@@ -650,9 +1167,9 @@ async function stopRecording() {
   isRecording = false;
   recBtn.classList.remove('recording'); folderBtn.disabled = false;
   stopTimer(); stopWave();
-  
+
   if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
-  
+
   if (chain.stereoOut) {
     try { chain.stereoOut.disconnect(mediaDest); } catch(e){}
     try { chain.stereoOut.disconnect(analyserNode); } catch(e){}
