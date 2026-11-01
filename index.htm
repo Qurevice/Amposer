@@ -100,28 +100,15 @@
   .brand small { font-family: 'Segoe UI', sans-serif; font-size: 9px; letter-spacing: 4px; font-weight: 700; color: #5a4d2a; display: block; margin-top: -2px; transition: color 0.4s; }
   .model { font-size: 10px; letter-spacing: 3px; font-weight: 700; color: #5a4d2a; transition: color 0.4s; }
 
-  /* Основной контейнер разделен на 2 ряда */
-  .panel-body { 
-    display: flex; 
-    flex-direction: column; 
-    gap: 8px; 
-  }
+  .panel-body { display: flex; flex-direction: column; gap: 8px; }
 
-  /* ВЕРХНИЙ РЯД: Модули */
-  .modules-row { 
-    display: flex; 
-    gap: 8px; 
-    width: 100%; 
-    flex-wrap: nowrap; 
-  }
+  .modules-row { display: flex; gap: 8px; width: 100%; flex-wrap: nowrap; }
   
   .module { 
     background: linear-gradient(180deg, #141414, #050505); 
     border-radius: 6px; padding: 8px 8px 9px; border: 1px solid #000; 
     display: flex; flex-direction: column; justify-content: center; 
-    flex: 1;
-    min-width: 0; 
-    transition: background 0.4s, border-color 0.4s;
+    flex: 1; min-width: 0; transition: background 0.4s, border-color 0.4s;
   }
   .module-title { font-size: 9px; letter-spacing: 2.5px; color: #c9a227; font-weight: 700; margin-bottom: 6px; text-align: center; transition: color 0.4s; }
   
@@ -139,8 +126,7 @@
     background: linear-gradient(180deg, #141414, #050505); 
     border-radius: 6px; padding: 10px 14px 8px; border: 1px solid #000; 
     display: flex; gap: 14px; align-items: center; justify-content: center; 
-    width: 100%;
-    transition: background 0.4s, border-color 0.4s;
+    width: 100%; transition: background 0.4s, border-color 0.4s;
   }
   .knob-group { display: flex; gap: 14px; }
   .knob-divider { width: 1px; align-self: stretch; background: linear-gradient(180deg, transparent, #444, transparent); margin: 4px 2px; }
@@ -526,15 +512,22 @@ function makeCurve(mode) {
     k = mode === 'clean' ? 1.2 : mode === 'crunch' ? 4.5 : 11;
     asym = mode === 'lead' ? 0.30 : mode === 'crunch' ? 0.15 : 0.05;
   } else {
-    // Злые кривые для Металла
-    k = mode === 'clean' ? 1.5 : mode === 'higain' ? 30 : 80;
-    asym = mode === 'metal' ? 0.50 : mode === 'higain' ? 0.25 : 0.05;
+    // Агрессивные искажения для металла
+    k = mode === 'clean' ? 2.5 : mode === 'higain' ? 60 : 180;
+    asym = mode === 'metal' ? 0.55 : mode === 'higain' ? 0.35 : 0.05;
   }
 
   const norm = Math.tanh(k);
   for (let i = 0; i < n; i++) {
     const x = (i / (n - 1)) * 2 - 1;
-    let y = (1 - asym) * Math.tanh(k * x) + asym * Math.tanh(k * x * 2.6);
+    // Увеличили гармоники (3.8 вместо 2.6) для звона и агрессии
+    let y = (1 - asym) * Math.tanh(k * x) + asym * Math.tanh(k * x * 3.8);
+    
+    // Жесткий клиппинг для режима METAL (добавляет "песок" и плотность)
+    if (currentAmp === 'metal' && mode === 'metal') {
+      y = Math.max(-1.1, Math.min(1.1, y * 1.8));
+    }
+    
     curve[i] = y / norm;
   }
   return curve;
@@ -574,6 +567,11 @@ function makePlateIR(ctx, seconds, decay) {
 function buildChain() {
   const ctx = audioCtx;
   chain.inputGain = ctx.createGain();
+  
+  // Фильтр для Tight Low-End (особенно важен для металла)
+  chain.preFilter = ctx.createBiquadFilter();
+  chain.preFilter.type = 'allpass'; 
+  
   chain.shaper    = ctx.createWaveShaper(); chain.shaper.oversample = '4x';
   chain.postGain  = ctx.createGain();
   chain.low  = ctx.createBiquadFilter();
@@ -695,7 +693,9 @@ function buildChain() {
   chain.revWet.connect(chain.revOut);
 
   /* ---------- СОЕДИНЕНИЕ ЦЕПИ ---------- */
-  chain.inputGain.connect(chain.shaper);
+  chain.inputGain.connect(chain.preFilter); // Фильтр перед исказителем
+  chain.preFilter.connect(chain.shaper);
+  
   chain.shaper.connect(chain.postGain);
   chain.postGain.connect(chain.low);
   chain.low.connect(chain.mid);
@@ -724,7 +724,15 @@ function buildChain() {
 function applyParams() {
   if (!audioCtx || !chain.inputGain) return;
   const t = audioCtx.currentTime; const S = 0.02;
-  const pre = 0.4 + Math.pow(params.gain, 1.6) * 14;
+  
+  // Для металла даем намного больше гейна на вход
+  let pre = 0;
+  if (currentAmp === 'metal') {
+    pre = 1.0 + Math.pow(params.gain, 1.5) * 25; 
+  } else {
+    pre = 0.4 + Math.pow(params.gain, 1.6) * 14;
+  }
+
   chain.inputGain.gain.setTargetAtTime(pre, t, S);
   chain.postGain.gain.setTargetAtTime(Math.pow(pre, -0.4) * 1.45, t, S);
   chain.low.gain.setTargetAtTime((params.low  - 0.5) * 30, t, S);
@@ -814,6 +822,9 @@ function setAmp(type) {
       <button data-mode="lead">LEAD</button>
     `;
     currentMode = 'crunch';
+    
+    // Отключаем HPF для классики
+    if (chain.preFilter) chain.preFilter.type = 'allpass';
   } else {
     ampEl.classList.add('metal-theme');
     ampModelName.textContent = 'QMM-999 · METAL';
@@ -824,8 +835,16 @@ function setAmp(type) {
       <button data-mode="metal">METAL</button>
     `;
     currentMode = 'higain';
+
+    // Включаем "тугой" фильтр для низа перед исказителем
+    if (chain.preFilter) {
+      chain.preFilter.type = 'highpass';
+      chain.preFilter.frequency.value = 140;
+      chain.preFilter.Q.value = 0.8;
+    }
   }
   
+  applyParams(); // Обновляем громкость (т.к. для металла гейн другой)
   applyMode();
 }
 
@@ -946,7 +965,6 @@ document.querySelectorAll('.knob').forEach(el => {
   render();
 });
 
-// Делегирование событий для кнопок перегруза, так как они пересоздаются
 document.getElementById('modeRow').addEventListener('click', e => {
   const btn = e.target.closest('button'); if (!btn) return;
   document.querySelectorAll('#modeRow button').forEach(b => b.classList.remove('active'));
